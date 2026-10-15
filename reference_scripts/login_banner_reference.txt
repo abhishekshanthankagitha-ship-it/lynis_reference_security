@@ -1,0 +1,32 @@
+################################################################################
+#
+# Test       : BANN-7126
+# Description: Check issue file to see if it contains some form of message
+#              to discourage unauthorized users to leave the system alone
+#
+if [ -f ${ROOTDIR}etc/issue ]; then PREQS_MET="YES"; else PREQS_MET="NO"; fi
+Register --test-no BANN-7126 --preqs-met ${PREQS_MET} --weight L --network NO --category security --description "Check issue banner file contents"
+if [ ${SKIPTEST} -eq 0 ]; then
+    COUNT=0
+    FILE="${ROOTDIR}etc/issue"
+    LogText "Test: Checking file ${FILE} contents for legal key words"
+    for ITEM in ${LEGAL_BANNER_STRINGS}; do
+        FIND=$(${GREP BINARY} -i "${ITEM}" ${FILE})
+        if HasData "${FIND}"; then
+            LogText "Result: found string '${ITEM}'"
+            COUNT=$((COUNT + 1))
+        fi
+    done
+    # Check if we have 5 or more key words
+    if [ ${COUNT} -gt 4 ]; then
+        LogText "Result: Found ${COUNT} key words (5 or more suggested), to warn unauthorized users"
+        Display --indent 4 --text "- ${FILE} contents" --result "${STATUS_OK}" --color GREEN
+        AddHP 2 2
+    else
+        LogText "Result: Found only ${COUNT} key words (5 or more suggested), to warn unauthorized users and could be increased"
+        Display --indent 4 --text "- ${FILE} contents" --result "${STATUS_WEAK}" --color YELLOW
+        ReportSuggestion "${TEST_NO}" "Add a legal banner to ${FILE}, to warn unauthorized users"
+        AddHP 0 1
+        Report "weak_banner_file[]=${FILE}"
+    fi
+fi

@@ -1,0 +1,7 @@
+2026-10-15 22:05:15 Performing test ID BANN-7124 (Check issue banner file)
+2026-10-15 22:05:15 Performing test ID BANN-7126 (Check issue banner file contents)
+2026-10-15 22:05:15 Test: Checking file /etc/issue contents for legal key words
+2026-10-15 22:05:15 Suggestion: Add a legal banner to /etc/issue, to warn unauthorized users [test:BANN-7126] [details:-] [solution:-]
+2026-10-15 22:05:15 Performing test ID BANN-7128 (Check issue.net banner file)
+2026-10-15 22:05:16 Performing test ID BANN-7130 (Check issue.net banner file contents)
+2026-10-15 22:05:16 Test: Checking file /etc/issue.net contents for legal key words
