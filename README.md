@@ -1,7 +1,6 @@
 # Lynis Security Enhancements
 
 ### Custom Security Auditing for Login Banners and NTP Configuration
-
 A cybersecurity project focused on studying existing security checks in [Lynis](https://github.com/CISOfy/lynis) and developing custom Bash scripts to enhance login banner validation and Network Time Protocol (NTP) security auditing on Linux systems.
 
 ---
