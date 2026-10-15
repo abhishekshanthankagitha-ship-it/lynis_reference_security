@@ -1,74 +1,119 @@
-# Lynis Security Enhancements
+# Lynis Reference Security Tests
 
-### Custom Security Auditing for Login Banners and NTP Configuration
-A cybersecurity project focused on studying existing security checks in [Lynis](https://github.com/CISOfy/lynis) and developing custom Bash scripts to enhance login banner validation and Network Time Protocol (NTP) security auditing on Linux systems.
+### Login Banner Security and NTP Configuration Auditing
 
----
+A cybersecurity project documenting selected reference tests from **Lynis**, an open-source security auditing tool for Linux and Unix-based systems. This repository focuses on login banner security and Network Time Protocol (NTP) configuration auditing.
 
-## 📌 Project Overview
-
-[Lynis](https://github.com/CISOfy/lynis) is an open-source security auditing tool for Linux, macOS, and Unix-based systems. It performs security checks, identifies potential weaknesses, and provides recommendations to improve system security.
-
-This project examines selected Lynis tests and develops standalone Bash scripts that perform additional security checks in two areas:
-
-- **Login Banner Security:** Examines login banner files for appropriate warning messages and potential security concerns.
-- **NTP Security Auditing:** Examines time synchronization configuration and runtime status to identify potential configuration weaknesses.
-
-The project documents the original Lynis reference tests, custom enhancements, and corresponding execution results.
-
-> **Implementation note:** The custom scripts are standalone Bash utilities inspired by Lynis security checks. They are not integrated into the Lynis test execution framework.
+The repository contains the original Lynis reference code and separate output files documenting the corresponding audit results.
 
 ---
 
-## 🎯 Project Objectives
+## 1. Project Overview
 
-- Study existing Lynis security tests and their implementation.
+[Lynis](https://github.com/CISOfy/lynis) is a security auditing tool that examines system configurations, identifies potential security weaknesses, and provides recommendations for improving system security.
+
+This project studies selected Lynis tests related to:
+
+- **Login Banner Security:** Examining legal warning messages displayed to users before login.
+- **NTP Security:** Examining time synchronization services, configuration-file security, and system clock synchronization.
+
+The original test implementations are documented alongside their audit outputs to provide a clear reference for understanding how Lynis performs these security checks.
+
+---
+
+## 2. Project Objectives
+
+- Study the implementation of selected Lynis security tests.
 - Understand how Linux security auditing checks are performed.
-- Identify opportunities to extend existing security validation.
-- Develop custom Bash scripts for login banner and NTP security auditing.
-- Compare the original reference checks with the custom implementations.
-- Record execution results for documentation and evaluation.
+- Examine login banner configuration and warning-message validation.
+- Understand NTP service detection and time synchronization checks.
+- Document the original reference code separately from its execution output.
+- Establish a baseline for studying additional security validation techniques.
 
 ---
 
-## 🛡️ Security Areas
+## 3. Reference Test 1: Login Banner Security
 
-### 1. Login Banner Security
+### Test ID: BANN-7126
 
-**Original Lynis reference test:** `BANN-7126`
+**Test description:** Check the contents of `/etc/issue` for legal warning keywords.
 
-The original test checks `/etc/issue` for legal warning keywords intended to discourage unauthorized system access.
+### Purpose
 
-The custom login banner script extends the basic validation with additional checks, including:
+The `BANN-7126` test examines the `/etc/issue` file to determine whether it contains warning-related keywords intended to discourage unauthorized users from accessing the system.
 
-- Checking whether `/etc/issue` and `/etc/issue.net` exist.
-- Identifying empty or missing banner files.
-- Checking for required warning-related keywords.
-- Detecting potential credential-like assignments using heuristic patterns.
-- Reporting findings to help administrators review banner configuration.
+A suitable login banner can communicate that a system is restricted to authorized users and that unauthorized access is prohibited.
 
-**Security objective:** Improve the visibility of login banner weaknesses and encourage the use of appropriate warning messages.
+### How the Test Works
 
-### 2. NTP Security Auditing
+1. Checks whether `/etc/issue` exists.
+2. Registers the test with the Lynis auditing framework.
+3. Examines the file for configured legal banner keywords.
+4. Counts the matching keywords.
+5. Displays a result based on the configured keyword threshold.
+6. Provides a recommendation when the banner may require improvement.
 
-**Original Lynis reference tests:** `TIME-3104`, `TIME-3106`, `TIME-3170`, and `TIME-3185`
+### Reference Source Code
 
-These tests cover areas such as time synchronization services, configuration-file security, and systemd-timesyncd synchronization.
+The original test implementation is available in:
 
-The custom NTP script performs additional checks, including:
+`reference_scripts/login_banner_reference.txt`
 
-- Inspecting relevant time synchronization configuration files and drop-in directories.
-- Checking for explicit NTP server and fallback configuration entries.
-- Examining runtime time synchronization information.
-- Comparing detected server hostnames against a configured hostname allowlist.
-- Checking whether `systemd-timesyncd` is active.
-- Checking the system's NTP synchronization status.
+### Execution Output
 
-**Security objective:** Help administrators review time synchronization configuration and identify potential weaknesses or unexpected settings.
+The corresponding Lynis audit log entries are available in:
+
+`results/reference_login_banner_output.txt`
+
+The output includes the test identification, the banner-content check, and any recommendation recorded by Lynis.
 
 ---
 
-## 📂 Repository Structure
+## 4. Reference Test 2: NTP Security
+
+This section documents selected Lynis tests associated with time synchronization and configuration security.
+
+### TIME-3104: NTP Service Detection
+
+**Purpose:** Checks for a running NTP daemon or client.
+
+This test helps determine whether an NTP-related service or client is running on the system.
+
+### TIME-3106: Systemd NTP Synchronization Status
+
+**Purpose:** Checks systemd NTP time synchronization status.
+
+The test examines synchronization-related information when its prerequisites are met.
+
+### TIME-3170: Configuration-File Security
+
+**Purpose:** Checks permissions and ownership of configuration files.
+
+The test examines relevant time-related configuration files to identify potentially insecure permissions or ownership settings.
+
+### TIME-3185: Systemd-Timesyncd Synchronization
+
+**Purpose:** Checks systemd-timesyncd synchronization status.
+
+This test checks whether the system clock has been synchronized through the systemd-timesyncd service.
+
+### Reference Source Code
+
+The original NTP-related test implementation is documented in:
+
+`reference_scripts/ntp_reference.txt`
+
+### Execution Output
+
+The corresponding Lynis audit log entries are available in:
+
+`results/reference_ntp_output.txt`
+
+The output records which relevant tests were performed or skipped during the audit. A test being performed does not, by itself, establish whether the system passed or failed the security check.
+
+---
+
+## 5. Repository Structure
 
 ```text
 lynis_reference_security/
@@ -79,132 +124,151 @@ lynis_reference_security/
 │   ├── login_banner_reference.txt
 │   └── ntp_reference.txt
 │
-├── enhanced_scripts/
-│   ├── custom_login_banner.sh
-│   └── custom_ntp_security.sh
-│
 └── results/
     ├── reference_login_banner_output.txt
     └── reference_ntp_output.txt
 ```
 
-The reference files document the relevant original Lynis test code. The results files contain selected log entries from the original Lynis audit.
+### Directory Description
 
-Custom script execution results and screenshots can be added to the `results/` directory as testing progresses.
-
----
-
-## ⚙️ Technologies Used
-
-- **Operating System:** Kali Linux
-- **Scripting Language:** Bash
-- **Security Auditing Tool:** Lynis
-- **System Utilities:** `grep`, `sed`, `timedatectl`
-- **Version Control:** Git and GitHub
+| File or Directory | Description |
+|---|---|
+| `README.md` | Project overview, test descriptions, and documentation |
+| `reference_scripts/` | Contains the original Lynis reference test code |
+| `login_banner_reference.txt` | Reference implementation of test BANN-7126 |
+| `ntp_reference.txt` | Reference implementations of selected NTP-related tests |
+| `results/` | Contains the corresponding audit output files |
+| `reference_login_banner_output.txt` | Login banner reference audit log entries |
+| `reference_ntp_output.txt` | NTP reference audit log entries |
 
 ---
 
-## 🚀 Execution
+## 6. Environment and Tools
+
+| Component | Details |
+|---|---|
+| Operating System | Kali Linux |
+| Security Auditing Tool | Lynis |
+| Scripting Language | Bash |
+| Text Processing Utilities | `grep`, `sed` |
+| Time Synchronization Utility | `timedatectl` |
+| Version Control | Git and GitHub |
+
+---
+
+## 7. Running the Reference Audit
 
 ### Prerequisites
 
-- A Linux environment, such as Kali Linux.
-- Bash shell.
-- Lynis installed for running the original reference audit.
-- Appropriate permissions to inspect system configuration and time synchronization status.
+- A Linux system with Lynis installed.
+- Appropriate permissions to execute a system security audit.
+- Access to the relevant system configuration and log files.
 
-### 1. Run the Original Lynis Audit
+### Step 1: Run the Lynis Audit
 
 ```bash
 sudo lynis audit system
 ```
 
-Search the Lynis log for the login banner reference test:
+Allow the audit to complete.
+
+### Step 2: Find Login Banner Test Results
 
 ```bash
-sudo grep -i -E 'BANN-7126|issue banner|legal key words' /var/log/lynis.log
+sudo grep -i -E 'BANN-7124|BANN-7126|BANN-7128|BANN-7130|issue banner|legal key words' /var/log/lynis.log
 ```
 
-Search for the relevant time synchronization tests:
+This searches the Lynis log for login banner-related test entries.
+
+### Step 3: Find NTP Test Results
 
 ```bash
 sudo grep -i -E 'TIME-3104|TIME-3106|TIME-3170|TIME-3185' /var/log/lynis.log
 ```
 
-### 2. Run the Custom Login Banner Script
+This searches the log for the selected NTP and time synchronization test entries.
 
-After placing the script in `enhanced_scripts/`, run:
+### Step 4: Inspect the Saved Output Files
 
-```bash
-bash enhanced_scripts/custom_login_banner.sh
-```
-
-### 3. Run the Custom NTP Security Script
+Display the login banner output:
 
 ```bash
-bash enhanced_scripts/custom_ntp_security.sh
+cat results/reference_login_banner_output.txt
 ```
 
-**Note:** The custom script paths above correspond to the intended repository structure. Ensure the files have been uploaded to those locations before running the commands. Review the scripts before execution and use appropriate permissions when necessary.
+Display the NTP output:
+
+```bash
+cat results/reference_ntp_output.txt
+```
+
+The saved files contain selected log entries from the audit performed on the development system. To obtain updated results, run the audit again and regenerate the output files.
 
 ---
 
-## 📊 Testing and Results
+## 8. Understanding the Results
 
-The project evaluates the original Lynis tests and the custom scripts separately.
+The audit output may contain messages indicating that a test was performed, skipped, or accompanied by a recommendation.
 
-| Test Area | Original Reference | Custom Implementation |
-|---|---|---|
-| Login banner | `BANN-7126` | Additional banner validation |
-| NTP service detection | `TIME-3104` | Runtime service checks |
-| NTP synchronization | `TIME-3106`, `TIME-3185` | Synchronization status checks |
-| Configuration-file security | `TIME-3170` | Additional configuration inspection |
+These messages must be interpreted carefully:
 
-Original Lynis audit output is documented separately from custom script output to distinguish the baseline checks from the additional validation.
+- **Test performed:** Lynis executed the corresponding check.
+- **Test skipped:** The check was not executed, potentially because its prerequisites were not met.
+- **Recommendation recorded:** Lynis identified an issue or an opportunity for improvement that warrants further review.
+- **No explicit configuration found:** This does not necessarily indicate a vulnerability; the system may obtain configuration values through another mechanism.
 
-Results depend on the system configuration, installed services, and available runtime information.
+The execution log should be interpreted alongside the corresponding test implementation and, where available, the detailed Lynis report.
 
 ---
 
-## 🔐 Security Considerations
+## 9. Security Significance
 
-- Run security audits only on systems you own or are authorized to assess.
-- Review scripts before executing them with elevated privileges.
-- Treat credential-like pattern matches as potential indicators requiring manual verification, not proof of exposed credentials.
-- A hostname allowlist is only as reliable as its configuration and validation.
-- Missing explicit NTP configuration does not necessarily indicate a vulnerability because a system may obtain defaults through another configuration mechanism.
-- A synchronized system clock does not, by itself, prove that the configured time source is trustworthy.
+### Login Banner Security
 
----
+Login banners help communicate system access restrictions and discourage unauthorized use. Administrators should ensure that warning messages are appropriate for the environment and comply with organizational policies.
 
-## 🔮 Future Enhancements
+### NTP Security
 
-- Integrate the custom checks into the Lynis test framework.
-- Add more detailed reporting and severity classification.
-- Improve validation of NTP server configuration and runtime behavior.
-- Add automated test cases for missing, empty, and misconfigured banner files.
-- Compare original and enhanced test results in a consistent report format.
-- Add repeatable test scenarios and documented expected outcomes.
+Reliable and secure time synchronization is important for accurate log timestamps, authentication mechanisms, certificate validation, and incident investigation.
+
+Administrators should review time synchronization configuration, service status, server trust, and system synchronization status when assessing NTP security.
+
+A synchronized clock alone does not prove that the configured time source is trustworthy.
 
 ---
 
-## 📚 References
+## 10. Limitations
 
-- [Lynis Official Repository](https://github.com/CISOfy/lynis)
+- The repository documents selected Lynis tests rather than the complete Lynis auditing framework.
+- The saved outputs represent the audit results captured on the development system.
+- Test behavior may vary depending on the installed Lynis version, operating system, service configuration, and test prerequisites.
+- The presence of a test execution message does not establish that the check passed.
+- The repository contains reference code and corresponding outputs; it does not claim that custom enhancements have been integrated into Lynis.
+
+---
+
+## 11. References
+
+- [Official Lynis Repository](https://github.com/CISOfy/lynis)
 - [Lynis Banner Tests](https://github.com/CISOfy/lynis/blob/master/include/tests_banners)
 - [Lynis Time-Related Tests](https://github.com/CISOfy/lynis/blob/master/include/tests_time)
 - [Lynis Test Database](https://github.com/CISOfy/lynis/blob/master/db/tests.db)
 
-The source code available in the installed Lynis version may differ from the current upstream repository. The reference files in this project should correspond to the version used during development.
+**Version note:** The reference source files should correspond to the Lynis version installed during testing. The upstream repository may contain newer or different implementations.
 
 ---
 
-## 👨‍💻 Project Information
+## 12. Conclusion
 
-**Project:** Lynis Security Enhancements  
-**Focus:** Linux Security Auditing and Bash Scripting  
-**Areas:** Login Banner Security and NTP Configuration Auditing
+This repository documents selected Lynis security checks related to login banner configuration and NTP security.
+
+By organizing the original reference code and its corresponding audit output into separate files, the project provides a structured resource for studying Linux security auditing, understanding test behavior, and reviewing the results generated by Lynis.
+
+The documented tests provide a foundation for further work on Linux system hardening and security validation.
 
 ---
 
-*This project is intended for educational purposes and authorized security auditing. The custom scripts provide additional checks and should not be considered a replacement for a complete security audit.*
+**Project:** Lynis Reference Security Tests  
+**Focus Areas:** Login Banner Security and NTP Configuration Auditing  
+**Platform:** Kali Linux  
+**Purpose:** Cybersecurity learning, reference documentation, and authorized security auditing
